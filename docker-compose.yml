@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    tty: true
+    stdin_open: true
+    command: bundle exec rails server -b 0.0.0.0
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+
+  # sidekiq:
+  #   build: .
+  #   command: bundle exec sidekiq -C config/sidekiq.yml
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - db
+  #     - redis
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: myapp_development
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6.2
+
+volumes:
+  pgdata:
