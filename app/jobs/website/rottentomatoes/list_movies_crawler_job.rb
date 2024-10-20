@@ -23,8 +23,8 @@ class Website::Rottentomatoes::ListMoviesCrawlerJob < SidekiqJob
   private
     def path(end_cursor)
       if end_cursor
-        "/napi/browse/movies_at_home?after=#{end_cursor.sub('=','')}%3D"
-      else  
+        "/napi/browse/movies_at_home?after=#{end_cursor.sub('=', '')}%3D"
+      else
         "/napi/browse/movies_at_home"
       end
     end
@@ -32,15 +32,15 @@ class Website::Rottentomatoes::ListMoviesCrawlerJob < SidekiqJob
     def parse_result(result)
       document = JSON.parse(result)
 
-      movies = document.dig('grid', 'list')
+      movies = document.dig("grid", "list")
 
       # Collect all movie URLs
-      movie_urls = movies.map { |movie| movie.fetch('mediaUrl') }
+      movies.map { |movie| movie.fetch("mediaUrl") }
     end
 
     def check_next_page(result)
       document = JSON.parse(result)
 
-      [document.dig('pageInfo', 'endCursor'), document.dig('pageInfo', 'hasNextPage')]
+      [document.dig("pageInfo", "endCursor"), document.dig("pageInfo", "hasNextPage")]
     end
 end

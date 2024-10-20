@@ -20,7 +20,7 @@ class Website::Rottentomatoes::ReviewsCrawlerJob < SidekiqJob
   private
     def path(movie_id, end_cursor)
       if end_cursor
-        "/napi/movie/#{movie_id}/reviews/all?after=#{end_cursor.sub('==','')}%3D%3D&pageCount=20"
+        "/napi/movie/#{movie_id}/reviews/all?after=#{end_cursor.sub('==', '')}%3D%3D&pageCount=20"
       else
         "/napi/movie/#{movie_id}/reviews/all"
       end

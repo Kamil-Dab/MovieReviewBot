@@ -12,6 +12,6 @@ class Website::Rottentomatoes::MovieCrawlerJob < SidekiqJob
     movie = Website::CreateMovie.call(
       crawled_data.result
     )
-    Website::Rottentomatoes::ReviewsCrawlerJob.perform_later(movie.pluck('movie_id').first)
+    Website::Rottentomatoes::ReviewsCrawlerJob.perform_later(movie.pluck("movie_id").first)
   end
 end
