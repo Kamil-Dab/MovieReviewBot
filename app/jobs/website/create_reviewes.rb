@@ -2,15 +2,20 @@ require 'json'
 
 class Website::CreateReviewes
   def self.call(movie_id, result)
-    new(movie_id, result).upsert_all_reviewes()
-  end
+    instance = new(movie_id, result)
+    instance.upsert_all_reviewes
+    
+    [instance.end_cursor, instance.has_next_page]
+    end
 
   def initialize(movie_id, result)
     @movie_id = movie_id
-    @result = result
+    @result = JSON.parse(result)
+    @end_cursor = @result.dig('pageInfo', 'endCursor')
+    @has_next_page = @result.dig('pageInfo', 'hasNextPage')
   end
 
-  attr_reader :result, :movie_id
+  attr_reader :result, :movie_id, :end_cursor, :has_next_page
 
   def upsert_all_reviewes
     data = format_crawled_data()
@@ -23,7 +28,7 @@ class Website::CreateReviewes
   end
 
   def format_crawled_data
-    reviews = JSON.parse(result)['reviews']
+    reviews = result['reviews']
     return [] if reviews.blank?
 
     reviews.map do |review|

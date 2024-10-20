@@ -3,31 +3,44 @@
 class Website::Rottentomatoes::ListMoviesCrawlerJob < SidekiqJob
   queue_as :default
 
-  def perform
+  def perform(end_cursor = nil)
     connect = Website::Rottentomatoes::Crawler.connect()
     crawled_data = Website::CreateCrawledData.call(
-      path, connect, "get"
+      path(end_cursor), connect, "get"
     )
 
     parse_result(crawled_data.result).each do |movie_url|
       Website::Rottentomatoes::MovieCrawlerJob.perform_later(movie_url)
     end
+
+    check_next_page(crawled_data.result).tap do |end_cursor, has_next_page|
+      if has_next_page
+        Website::Rottentomatoes::ListMoviesCrawlerJob.perform_later(end_cursor)
+      end
+    end
   end
 
   private
-    def path
-      "/browse/movies_at_home"
+    def path(end_cursor)
+      if end_cursor
+        "/napi/browse/movies_at_home?after=#{end_cursor.sub('=','')}%3D"
+      else  
+        "/napi/browse/movies_at_home"
+      end
     end
 
     def parse_result(result)
-      document = Nokogiri::HTML(result)
+      document = JSON.parse(result)
 
-      json_ld_script = document.at('script[type="application/ld+json"]')
-      json_ld_data = JSON.parse(json_ld_script.content)
-      movies = json_ld_data.dig('itemListElement')
-      movies= movies.dig('itemListElement')
+      movies = document.dig('grid', 'list')
 
       # Collect all movie URLs
-      movie_urls = movies.map { |movie| movie.dig('url').sub('https://www.rottentomatoes.com', '') }
+      movie_urls = movies.map { |movie| movie.fetch('mediaUrl') }
+    end
+
+    def check_next_page(result)
+      document = JSON.parse(result)
+
+      [document.dig('pageInfo', 'endCursor'), document.dig('pageInfo', 'hasNextPage')]
     end
 end
