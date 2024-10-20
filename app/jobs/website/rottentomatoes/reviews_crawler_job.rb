@@ -3,7 +3,7 @@
 require "nokogiri"
 
 class Website::Rottentomatoes::ReviewsCrawlerJob < SidekiqJob
-  queue_as :defaul
+  queue_as :default
 
   def perform(movie_id)
     puts "Crawling reviews for movie_id: #{movie_id}"

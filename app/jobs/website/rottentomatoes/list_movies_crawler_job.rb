@@ -10,7 +10,7 @@ class Website::Rottentomatoes::ListMoviesCrawlerJob < SidekiqJob
     )
 
     parse_result(crawled_data.result).each do |movie_url|
-      Website::Rottentomatoes::MovieCrawlerJob.perform_now(movie_url)
+      Website::Rottentomatoes::MovieCrawlerJob.perform_later(movie_url)
     end
   end
 
@@ -21,7 +21,6 @@ class Website::Rottentomatoes::ListMoviesCrawlerJob < SidekiqJob
 
     def parse_result(result)
       document = Nokogiri::HTML(result)
-      puts document
 
       json_ld_script = document.at('script[type="application/ld+json"]')
       json_ld_data = JSON.parse(json_ld_script.content)

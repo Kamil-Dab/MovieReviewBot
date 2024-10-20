@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_20_132033) do
+ActiveRecord::Schema.define(version: 2024_10_20_153233) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2024_10_20_132033) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "movie_id"
+    t.index ["critic_name", "movie_id"], name: "index_reviews_on_critic_name_and_movie_id", unique: true
   end
 
   add_foreign_key "reviews", "movies"

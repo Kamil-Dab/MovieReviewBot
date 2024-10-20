@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Website::Rottentomatoes::MovieCrawlerJob < SidekiqJob
-  queue_as :defaul
+  queue_as :default
 
   def perform(path)
     connect = Website::Rottentomatoes::Crawler.connect()
@@ -12,6 +12,6 @@ class Website::Rottentomatoes::MovieCrawlerJob < SidekiqJob
     movie = Website::CreateMovie.call(
       crawled_data.result
     )
-    Website::Rottentomatoes::ReviewsCrawlerJob.perform_now(movie.pluck('movie_id').first)
+    Website::Rottentomatoes::ReviewsCrawlerJob.perform_later(movie.pluck('movie_id').first)
   end
 end
