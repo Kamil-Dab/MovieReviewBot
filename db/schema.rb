@@ -45,7 +45,8 @@ ActiveRecord::Schema.define(version: 2024_10_20_132033) do
     t.string "score_sentiment", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "movie_id"
   end
 
-  add_foreign_key "reviews", "movies", column: "id"
+  add_foreign_key "reviews", "movies"
 end
