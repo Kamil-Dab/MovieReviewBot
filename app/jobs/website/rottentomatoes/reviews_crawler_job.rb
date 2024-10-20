@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "nokogiri"
-
 class Website::Rottentomatoes::ReviewsCrawlerJob < SidekiqJob
   queue_as :default
 

@@ -36,6 +36,7 @@ gem "faraday"
 gem "bootsnap", ">= 1.4.4", require: false
 
 group :development, :test do
+  gem "rspec-rails", "~> 6.0" # Adjust the version as needed
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: %i[mri mingw x64_mingw]
 end
@@ -59,7 +60,13 @@ end
 group :test do
   # Adds support for Capybara system testing and selenium driver
   gem "capybara", ">= 3.26"
+  gem "factory_bot_rails"     # For creating test data easily
+  gem "faker"                 # For generating fake data
+  gem "vcr"
+  gem "webmock"
+  gem "database_cleaner-active_record" # For cleaning the test database
   gem "selenium-webdriver", ">= 4.0.0.rc1"
+  gem "rspec-enqueue_sidekiq_job"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

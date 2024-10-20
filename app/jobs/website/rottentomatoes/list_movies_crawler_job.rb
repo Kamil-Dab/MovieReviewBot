@@ -13,9 +13,9 @@ class Website::Rottentomatoes::ListMoviesCrawlerJob < SidekiqJob
       Website::Rottentomatoes::MovieCrawlerJob.perform_later(movie_url)
     end
 
-    check_next_page(crawled_data.result).tap do |end_cursor, has_next_page|
+    check_next_page(crawled_data.result).tap do |next_end_cursor, has_next_page|
       if has_next_page
-        Website::Rottentomatoes::ListMoviesCrawlerJob.perform_later(end_cursor)
+        Website::Rottentomatoes::ListMoviesCrawlerJob.perform_later(next_end_cursor)
       end
     end
   end

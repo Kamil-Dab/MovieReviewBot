@@ -15,7 +15,7 @@ services:
       - redis
     environment:
       DATABASE_DEVELOPMENT_URL: postgres://postgres:password@db:5432/app_development
-      TEST_DEVELOPMENT_URL: postgres://postgres:password@db:5432/test
+      DATABASE_TEST_URL: postgres://postgres:password@db:5432/test
       REDIS_URL: redis://redis:6379/0
 
   sidekiq:

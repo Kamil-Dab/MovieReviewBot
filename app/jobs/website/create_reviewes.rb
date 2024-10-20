@@ -34,15 +34,17 @@ class Website::CreateReviewes
     return [] if reviews.blank?
 
     reviews.map do |review|
+      next if review["criticName"].blank?
+
       {
-        critic_name: review["criticName"] || "Unknown Critic",
-        review: review["quote"],
-        creation_date: review["creationDate"],
-        review_url: review["reviewUrl"],
-        original_score: review["originalScore"],
-        score_sentiment: review["scoreSentiment"],
-        movie_id: Movie.find_by(movie_id: movie_id).id
+      critic_name: review["criticName"],
+      review: review["quote"],
+      creation_date: review["creationDate"],
+      review_url: review["reviewUrl"],
+      original_score: review["originalScore"],
+      score_sentiment: review["scoreSentiment"],
+      movie_id: Movie.find_by(movie_id: movie_id).id
       }.merge(created_at: Time.current, updated_at: Time.current)
-    end.unique
+    end.compact
   end
 end
