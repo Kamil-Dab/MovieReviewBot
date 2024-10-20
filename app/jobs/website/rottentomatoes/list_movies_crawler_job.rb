@@ -24,15 +24,9 @@ class Website::Rottentomatoes::ListMoviesCrawlerJob < SidekiqJob
       puts document
 
       json_ld_script = document.at('script[type="application/ld+json"]')
-      puts "Dupa"
-      puts json_ld_script
       json_ld_data = JSON.parse(json_ld_script.content)
-      puts "Dupa2"
-      puts json_ld_data
       movies = json_ld_data.dig('itemListElement')
-      puts "Dupa3"
       movies= movies.dig('itemListElement')
-      puts movies
 
       # Collect all movie URLs
       movie_urls = movies.map { |movie| movie.dig('url').sub('https://www.rottentomatoes.com', '') }
