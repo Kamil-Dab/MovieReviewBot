@@ -1,3 +1,13 @@
+require "sidekiq/web"
+
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  if Rails.env.production?
+    Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+      # TBD Replace by authentication logic
+      username == ENV['SIDEKIQ_USERNAME'] && password == ENV['SIDEKIQ_PASSWORD']
+    end
+  end
+
+  # Mount the Sidekiq web interface at "/sidekiq"
+  mount Sidekiq::Web => '/sidekiq'
 end

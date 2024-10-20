@@ -13,27 +13,40 @@ services:
     depends_on:
       - db
       - redis
+    environment:
+      DATABASE_DEVELOPMENT_URL: postgres://postgres:password@db:5432/app_development
+      TEST_DEVELOPMENT_URL: postgres://postgres:password@db:5432/test
+      REDIS_URL: redis://redis:6379/0
 
-  # sidekiq:
-  #   build: .
-  #   command: bundle exec sidekiq -C config/sidekiq.yml
-  #   volumes:
-  #     - .:/app
-  #   depends_on:
-  #     - db
-  #     - redis
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_DEVELOPMENT_URL: postgres://postgres:password@db:5432/app_development
+      REDIS_URL: redis://redis:6379/0
 
   db:
     image: postgres:13
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: myapp_development
+      POSTGRES_DB: app_development
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   redis:
-    image: redis:6.2
+    image: redis:7-alpine
+    volumes:
+      - redis:/data
+    
 
 volumes:
   pgdata:
+  redis:
